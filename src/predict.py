@@ -177,7 +177,7 @@ def validate_value(feature, value):
         )
     if not (guide["soft_min"] <= value <= guide["soft_max"]):
         warning = (
-            f"⚠️ {guide['display_name']}={value} {guide['unit']} 超出常見參考範圍 "
+            f" {guide['display_name']}={value} {guide['unit']} 超出常見參考範圍 "
             f"({guide['soft_min']}~{guide['soft_max']})，請確認輸入是否正確"
         )
         return True, warning
