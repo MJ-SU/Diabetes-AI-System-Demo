@@ -66,7 +66,6 @@ def train_one_trial(trial):
 
     X_train_split, X_val_split, y_train_split, y_val_split = split_train_val(X_train_tensor, y_train_tensor)
 
-    # 這些就是最主要的調參入口：
     # - hidden1 / hidden2：模型容量
     # - dropout：防止過擬合
     # - learning_rate：學習速度
@@ -111,8 +110,7 @@ def train_one_trial(trial):
     return f2
 
 if __name__ == "__main__":
-    # 讓 Optuna 更仔細找，可以把 n_trials 從 20 提高到 50、100
-    # 這會更慢，但通常更有機會找到更好的組合
+    # n_trials上升，提高Optuna精密程度
     n_trials = 100
 
     study = optuna.create_study(direction="maximize")
@@ -156,23 +154,8 @@ if __name__ == "__main__":
     print(f"F2 Score: {f2:.4f}")
     print("Confusion Matrix:")
     print(cm)
-
-    # 如果你想再把 Accuracy 往上推：
-    # 1) 把 threshold 搜尋範圍再往上移，例如 0.55~0.80
-    # 2) 把 ACCURACY_FLOOR 提高到 0.78 或 0.80，讓 Optuna 更嚴格
-    # 3) 把 Optuna 的目標改成「Accuracy + alpha * F2」，alpha 越大越重視 F2
-    # 4) 如果 recall 掉太多，才考慮把 threshold 下限稍微放低一點
-
-    # 如果你對目前結果不滿意，通常優先調這幾個地方：
-    # 1) 想提升 Recall：把 threshold 下修到 0.30~0.45，或把搜尋範圍往低閾值移
-    # 2) 想降低誤報、提升 Precision：把 threshold 上修到 0.50~0.65
-    # 3) 想讓模型更有表達能力：把 hidden1 / hidden2 的候選值加大，例如 64 / 32 / 16
-    # 4) 想讓模型更穩：把 dropout 變成 0.1~0.3 左右再試
-    # 5) 想找更好的組合：把 n_trials 提高，或把 learning_rate 範圍縮得更細
-
+    #儲存訓練好的模型
     model_path = Path(__file__).resolve().parent.parent / "models"
-
-    # 如果 models 資料夾不存在，就建立
     model_path.mkdir(exist_ok=True)
 
     torch.save(
