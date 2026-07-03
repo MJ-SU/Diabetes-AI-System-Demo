@@ -17,19 +17,18 @@
 - 前處理：StandardScaler
 - 可解釋性：SHAP
 - 前端：Streamlit
-- 資料集：`data/diabetes.csv`取自Pima Indians Diabetes Database
 
 ## 專案結構
 
-- `app.py`：Streamlit 入口
-- `src/train.py`：模型訓練與輸出權重
-- `src/predict.py`：命令列預測、風險分層、SHAP 解釋與報告輸出
-- `src/explain.py`：獨立 SHAP 分析腳本
-- `src/preprocess.py`：資料前處理與 scaler
+- `app.py`：使用Streamlit 建立predict.py前端
+- `src/train.py`：模型訓練與輸出訓練後選擇的模型權重
+- `src/predict.py`：可使用終端輸入資料進行糖尿病風險預測、SHAP 解釋與報告輸出
+- `src/explain.py`：針對整個訓練後的模型進行 SHAP 分析並視覺化，以利觀察影響較大的因子
+- `src/preprocess.py`：資料前處理與 scaler標準化建立
 - `src/model.py`：PyTorch 模型定義
-- `models/diabetes_model.pth`：訓練後模型權重
-- `models/scaler.pkl`：固定前處理 scaler
-- `data/diabetes.csv`：原始資料集
+- `models/diabetes_model.pth`：訓練後儲存的最佳模型權重
+- `models/scaler.pkl`：儲存前處理的 scaler
+- `data/diabetes.csv`：原始資料集，取自Pima Indians Diabetes Database
 
 ## 安裝方式
 
