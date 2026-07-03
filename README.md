@@ -47,7 +47,7 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-### 命令列預測
+### 使用終端進行預測
 
 ```bash
 python src/predict.py
@@ -76,4 +76,4 @@ python src/explain.py
 
 ## 注意事項
 
-- 這是利用糖尿病風險初步篩檢工具，不是醫療診斷工具。
+- 這是利用PyTorch模型建立的糖尿病風險初步篩檢工具，不是真實的醫療診斷工具，結果僅供參考。
