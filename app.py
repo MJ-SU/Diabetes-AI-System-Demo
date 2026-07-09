@@ -13,6 +13,7 @@ from src.predict import (
 	get_scaler_path,
 	load_model,
 	load_scaler,
+	get_default_patient_values,
 	predict_risk,
 	prepare_data,
 	risk_tier,
@@ -63,6 +64,11 @@ def build_patient_dataframe(values):
 	return pd.DataFrame([values], columns=FEATURE_COLUMNS)
 
 
+@st.cache_data(show_spinner=False)
+def get_default_inputs():
+	return get_default_patient_values()
+
+
 def main():
 	st.title("Diabetes AI System")
 	st.caption("糖尿病風險初步篩檢與 SHAP 解釋介面")
@@ -74,6 +80,7 @@ def main():
 		st.markdown(
 			"請輸入病人的 8 項特徵。超出常見範圍時，系統會提示，但仍可送出。"
 		)
+		default_inputs = get_default_inputs()
 
 		with st.form("patient_form"):
 			inputs = {}
@@ -81,7 +88,7 @@ def main():
 				guide = FEATURE_GUIDE[feature]
 				inputs[feature] = st.number_input(
 					f'{guide["display_name"]} ({feature})',
-					value=float(guide["soft_min"]),
+					value=float(default_inputs[feature]),
 					min_value=float(guide["hard_min"]),
 					max_value=float(guide["hard_max"]),
 					step=0.1 if feature == "DiabetesPedigreeFunction" else 1.0,

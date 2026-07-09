@@ -120,6 +120,16 @@ FEATURE_GUIDE = {
     },
 }
 
+
+def get_default_patient_values():
+    try:
+        from src.preprocess import clean_data, fill_missing_values, load_data
+    except ImportError:
+        from preprocess import clean_data, fill_missing_values, load_data
+
+    df = fill_missing_values(clean_data(load_data()))
+    return {feature: float(df[feature].median()) for feature in FEATURE_COLUMNS}
+
 DISCLAIMER = (
     "本報告由機器學習模型自動產生，僅供糖尿病風險「初步篩檢參考」之用，"
     "不能取代醫師之專業診斷與檢驗。若風險分層為中度以上，建議盡快諮詢醫療專業人員。"
