@@ -23,7 +23,6 @@ except ImportError:
     from model import DiabetesModel
     from preprocess import prepare_data
 
-# 目標設定：先確保 Accuracy 至少 0.78，再盡量把 F2 拉高
 ACCURACY_FLOOR = 0.75
 
 #定義評估模型函數(計算準確率、精確率、召回率、F1分數、F2分數和混淆矩陣)
@@ -48,7 +47,7 @@ def evaluate_model(model, X_tensor, y_tensor, threshold=0.5):
 
         cm = confusion_matrix(y_true, y_pred)
 
-    return accuracy, precision, recall, f1, f2, cm 
+    return accuracy, precision, recall, f1, f2, cm
 
 
 def split_train_val(X_train_tensor, y_train_tensor, val_ratio=0.2):
@@ -105,6 +104,7 @@ def train_one_trial(trial):
 
     X_train_split, X_val_split, y_train_split, y_val_split = split_train_val(X_train_tensor, y_train_tensor)
 
+    # 這些就是最主要的調參入口：
     # - hidden1 / hidden2：模型容量
     # - dropout：防止過擬合
     # - learning_rate：學習速度
@@ -115,8 +115,6 @@ def train_one_trial(trial):
     dropout = trial.suggest_float("dropout", 0.0, 0.4)
     learning_rate = trial.suggest_float("learning_rate", 1e-4, 3e-3, log=True)
     epochs = trial.suggest_int("epochs", 80, 150)
-    # F2 比 F1 更重視 recall，所以閾值不應只往高區間找；
-    # 這裡把候選範圍往低閾值移，避免模型過度保守。
     threshold = trial.suggest_float("threshold", 0.25, 0.55)
 
     model = DiabetesModel(hidden1=hidden1, hidden2=hidden2, dropout=dropout)
@@ -142,14 +140,8 @@ def train_one_trial(trial):
     return balanced_score
 
 if __name__ == "__main__":
-<<<<<<< HEAD
-    # n_trials上升，提高Optuna精密程度
+
     n_trials = 100
-=======
-    # 讓 Optuna 更仔細找，可以把 n_trials 從 20 提高到 50、100
-    # 這會更慢，但通常更有機會找到更好的組合
-    n_trials = 80
->>>>>>> 94e0fec (refine training balance and prediction defaults)
 
     study = optuna.create_study(direction="maximize")
     study.optimize(train_one_trial, n_trials=n_trials)
@@ -189,8 +181,10 @@ if __name__ == "__main__":
     print(f"F2 Score: {f2:.4f}")
     print("Confusion Matrix:")
     print(cm)
-    #儲存訓練好的模型
+
     model_path = Path(__file__).resolve().parent.parent / "models"
+
+    # 如果 models 資料夾不存在，就建立
     model_path.mkdir(exist_ok=True)
 
     torch.save(
@@ -198,9 +192,6 @@ if __name__ == "__main__":
         model_path / "diabetes_model.pth"
     )
 
-<<<<<<< HEAD
-    print("\nModel saved successfully!")
-=======
     training_meta = {
         "best_threshold": best_params["threshold"],
         "best_params": best_params,
@@ -220,4 +211,3 @@ if __name__ == "__main__":
 
     print("\nModel saved successfully!")
     print(f"Training metadata saved to: {model_path / 'training_meta.json'}")
->>>>>>> 94e0fec (refine training balance and prediction defaults)
