@@ -1,6 +1,7 @@
 # Diabetes AI System
 
 以 PyTorch 建立的糖尿病風險預測專案，整合資料前處理、模型推論、SHAP 可解釋性與 Streamlit 互動介面。
+資料集來源:https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database
 
 ## 專案亮點
 
